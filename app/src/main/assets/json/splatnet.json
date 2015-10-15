@@ -1,0 +1,95 @@
+{
+  "updateTime":1444903329297,
+  "schedule":[
+    {
+      "startTime":1444903200000,
+      "endTime":1444917600000,
+      "regular":{
+        "maps":[
+          {
+            "nameJP":"デカライン高架下",
+            "nameEN":"Urchin Underpass"
+          },
+          {
+            "nameJP":"モズク農園",
+            "nameEN":"Kelp Dome"
+          }
+        ]
+      },
+      "ranked":{
+        "maps":[
+          {
+            "nameJP":"ホッケふ頭",
+            "nameEN":"Port Mackerel"
+          },
+          {
+            "nameJP":"ヒラメが丘団地",
+            "nameEN":"Flounder Heights"
+          }
+        ],
+        "rulesJP":"ガチホコ",
+        "rulesEN":"Rainmaker"
+      }
+    },
+    {
+      "startTime":1444917600000,
+      "endTime":1444932000000,
+      "regular":{
+        "maps":[
+          {
+            "nameJP":"ハコフグ倉庫",
+            "nameEN":"Walleye Warehouse"
+          },
+          {
+            "nameJP":"ヒラメが丘団地",
+            "nameEN":"Flounder Heights"
+          }
+        ]
+      },
+      "ranked":{
+        "maps":[
+          {
+            "nameJP":"シオノメ油田",
+            "nameEN":"Saltspray Rig"
+          },
+          {
+            "nameJP":"モズク農園",
+            "nameEN":"Kelp Dome"
+          }
+        ],
+        "rulesJP":"ガチエリア",
+        "rulesEN":"Splat Zones"
+      }
+    },
+    {
+      "startTime":1444932000000,
+      "endTime":1444946400000,
+      "regular":{
+        "maps":[
+          {
+            "nameJP":"アロワナモール",
+            "nameEN":"Arowana Mall"
+          },
+          {
+            "nameJP":"マサバ海峡大橋",
+            "nameEN":"Hammerhead Bridge"
+          }
+        ]
+      },
+      "ranked":{
+        "maps":[
+          {
+            "nameJP":"デカライン高架下",
+            "nameEN":"Urchin Underpass"
+          },
+          {
+            "nameJP":"ネギトロ炭鉱",
+            "nameEN":"Bluefin Depot"
+          }
+        ],
+        "rulesJP":"ガチホコ",
+        "rulesEN":"Rainmaker"
+      }
+    }
+  ]
+}
