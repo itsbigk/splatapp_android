@@ -118,8 +118,9 @@ public class RotationFragment extends Fragment {
     }
 
     void refreshItems() {
+        refreshLayout.setRefreshing(true);
+
         // Load items
-        // ...
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -127,6 +128,7 @@ public class RotationFragment extends Fragment {
                 adapter.updateDataset(mapRotation.schedule.toArray(new MapRotation.ScheduleItem[mapRotation.schedule.size()]));
             }
         }).start();
+
         // Load complete
         onItemsLoadComplete();
     }

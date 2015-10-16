@@ -22,13 +22,13 @@ public class JsonHelper {
     private static final String mapRotationsUrl = "https://splatoon.ink/schedule.json";
     private static final int timeout = 5000;
 
-    public static String getMapRotationsJson() {
+    public static String getJsonFromUrl(String url) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         HttpURLConnection c = null;
         try {
-            URL u = new URL(mapRotationsUrl);
+            URL u = new URL(url);
             c = (HttpURLConnection) u.openConnection();
             c.setRequestMethod("GET");
             c.setRequestProperty("Content-length", "0");
@@ -64,6 +64,10 @@ public class JsonHelper {
             }
         }
         return null;
+    }
+
+    public static String getMapRotationsJson() {
+        return getJsonFromUrl(mapRotationsUrl);
     }
 
     public static MapRotation getMapRotations() {

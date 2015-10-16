@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10sp"
+            android:weightSum="1">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rotcard_header_regular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/rotcard_header_img_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:adjustViewBounds="true"
+                        android:maxHeight="50sp"
+                        android:padding="5sp"
+                        android:src="@drawable/match_regular" />
+
+                    <TextView
+                        android:id="@+id/rotcard_header_title_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/rotcard_header_img_regular"
+                        android:layout_toRightOf="@+id/rotcard_header_img_regular"
+                        android:padding="5sp"
+                        android:text="Regular Battle"
+                        android:textColor="@android:color/primary_text_dark"
+                        android:textSize="30sp" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rotcard_header_regular"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/rotcard_map1_img_regular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:padding="5sp"
+                            android:src="@drawable/stage1" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/rotcard_map1_img_regular"
+                            android:layout_marginBottom="5sp"
+                            android:layout_marginLeft="5sp"
+                            android:layout_marginRight="5sp"
+                            android:background="#99000000">
+
+                            <TextView
+                                android:id="@+id/rotcard_map1_mapName_regular"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="5sp"
+                                android:text="Stage 1"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/rotcard_map2_img_regular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:padding="5sp"
+                            android:src="@drawable/stage2" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/rotcard_map2_img_regular"
+                            android:layout_marginBottom="5sp"
+                            android:layout_marginLeft="5sp"
+                            android:layout_marginRight="5sp"
+                            android:layout_marginTop="-30sp"
+                            android:background="#99000000">
+
+                            <TextView
+                                android:id="@+id/rotcard_map2_mapName_regular"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="5sp"
+                                android:text="Stage 2"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/rotcard_header_ranked"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20sp">
+
+                    <ImageView
+                        android:id="@+id/rotcard_header_img_ranked"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:adjustViewBounds="true"
+                        android:maxHeight="50sp"
+                        android:padding="5sp"
+                        android:src="@drawable/match_ranked" />
+
+                    <TextView
+                        android:id="@+id/rotcard_header_title_ranked"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/rotcard_header_img_ranked"
+                        android:layout_toRightOf="@+id/rotcard_header_img_ranked"
+                        android:padding="5sp"
+                        android:text="Ranked"
+                        android:textSize="30sp"
+                        android:textColor="@android:color/primary_text_dark" />
+
+                    <TextView
+                        android:id="@+id/rotcard_header_rules"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/rotcard_header_title_ranked"
+                        android:layout_toRightOf="@+id/rotcard_header_title_ranked"
+                        android:textColor="@android:color/secondary_text_dark"
+                        android:ellipsize="none"
+                        android:padding="5sp"
+                        android:textSize="20sp" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rotcard_header_ranked"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/rotcard_map1_img_ranked"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:padding="5sp"
+                            android:src="@drawable/stage1" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/rotcard_map1_img_ranked"
+                            android:layout_marginBottom="5sp"
+                            android:layout_marginLeft="5sp"
+                            android:layout_marginRight="5sp"
+                            android:layout_marginTop="-30sp"
+                            android:background="#99000000">
+
+                            <TextView
+                                android:id="@+id/rotcard_map1_mapName_ranked"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="5sp"
+                                android:text="Stage 1"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/rotcard_map2_img_ranked"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:padding="5sp"
+                            android:src="@drawable/stage2" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/rotcard_map2_img_ranked"
+                            android:layout_marginBottom="5sp"
+                            android:layout_marginLeft="5sp"
+                            android:layout_marginRight="5sp"
+                            android:layout_marginTop="-30sp"
+                            android:background="#99000000">
+
+                            <TextView
+                                android:id="@+id/rotcard_map2_mapName_ranked"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="5sp"
+                                android:text="Stage 2"
+                                android:textColor="#ffffff"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

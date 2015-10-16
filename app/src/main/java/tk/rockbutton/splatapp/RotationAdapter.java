@@ -1,7 +1,5 @@
 package tk.rockbutton.splatapp;
 
-import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,7 +83,7 @@ public class RotationAdapter extends RecyclerView.Adapter<RotationAdapter.ViewHo
         map2img_ranked.setImageResource(getMapImage(dataset[position].ranked[1].nameEn));
     }
 
-    private int getMapImage(String mapName) {
+    public static int getMapImage(String mapName) {
         switch (mapName) {
             case "Walleye Warehouse":
                 return R.drawable.stage1;
@@ -109,6 +107,8 @@ public class RotationAdapter extends RecyclerView.Adapter<RotationAdapter.ViewHo
                 return R.drawable.stage10;
             case "Moray Towers":
                 return R.drawable.stage11;
+            case "Port Mackerel":
+                return R.drawable.stage12;
         }
 
         return R.drawable.stage1;
