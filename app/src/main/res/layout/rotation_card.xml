@@ -42,9 +42,10 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:adjustViewBounds="true"
+                        android:antialias="true"
                         android:maxHeight="50sp"
                         android:padding="5sp"
-                        android:src="@drawable/match_regular" />
+                        android:src="@drawable/regular" />
 
                     <TextView
                         android:id="@+id/rotcard_header_title_regular"
@@ -154,9 +155,10 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:adjustViewBounds="true"
+                        android:antialias="true"
                         android:maxHeight="50sp"
                         android:padding="5sp"
-                        android:src="@drawable/match_ranked" />
+                        android:src="@drawable/ranked" />
 
                     <TextView
                         android:id="@+id/rotcard_header_title_ranked"

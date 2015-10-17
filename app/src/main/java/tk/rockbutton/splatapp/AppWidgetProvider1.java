@@ -1,5 +1,6 @@
 package tk.rockbutton.splatapp;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -19,40 +20,51 @@ import java.util.TimeZone;
  * Created by max on 10/16/15.
  */
 public class AppWidgetProvider1 extends AppWidgetProvider {
+    public static String ACTION_WIDGET_CONFIGURE = "ConfigureWidget";
+    public static String ACTION_WIDGET_RECEIVER = "ActionReceiverWidget";
+    private PendingIntent service = null;
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        final int N = appWidgetIds.length;
+        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        MapRotation dataset = JsonHelper.getMapRotations();
+        final Calendar TIME = Calendar.getInstance();
+        TIME.set(Calendar.MINUTE, 0);
+        TIME.set(Calendar.SECOND, 0);
+        TIME.set(Calendar.MILLISECOND, 0);
 
-        // Perform this loop procedure for each App Widget that belongs to this provider
-        for (int i=0; i<N; i++) {
-            int appWidgetId = appWidgetIds[i];
+        final Intent i = new Intent(context, NotificationBackgroundTask.class);
 
-            // Create an Intent to launch ExampleActivity
-            //Intent intent = new Intent(context, MainActivity.class);
-            //PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-
-            // Get the layout for the App Widget and attach an on-click listener
-            // to the button
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget);
-            //views.setOnClickPendingIntent(R.id.button, pendingIntent);
-
-            //Regular
-            views.setTextViewText(R.id.rotcard_map1_mapName_regular, dataset.schedule.get(0).regular[0].nameEn);
-            views.setTextViewText(R.id.rotcard_map2_mapName_regular, dataset.schedule.get(0).regular[1].nameEn);
-            views.setImageViewResource(R.id.rotcard_map1_img_regular, RotationAdapter.getMapImage(dataset.schedule.get(0).regular[0].nameEn));
-            views.setImageViewResource(R.id.rotcard_map2_img_regular, RotationAdapter.getMapImage(dataset.schedule.get(0).regular[1].nameEn));
-
-            //Ranked
-            views.setTextViewText(R.id.rotcard_header_rules, dataset.schedule.get(0).rankedRulesEn);
-            views.setTextViewText(R.id.rotcard_map1_mapName_ranked, dataset.schedule.get(0).ranked[0].nameEn);
-            views.setTextViewText(R.id.rotcard_map2_mapName_ranked, dataset.schedule.get(0).ranked[1].nameEn);
-            views.setImageViewResource(R.id.rotcard_map1_img_ranked, RotationAdapter.getMapImage(dataset.schedule.get(0).ranked[0].nameEn));
-            views.setImageViewResource(R.id.rotcard_map2_img_ranked, RotationAdapter.getMapImage(dataset.schedule.get(0).ranked[1].nameEn));
-
-            // Tell the AppWidgetManager to perform an update on the current app widget
-            appWidgetManager.updateAppWidget(appWidgetId, views);
+        if (service == null) {
+            service = PendingIntent.getService(context, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
         }
+
+        m.setRepeating(AlarmManager.RTC, TIME.getTime().getTime(), 1800000, service); // half-hour
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        super.onDeleted(context, appWidgetIds);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        super.onDisabled(context);
+
+        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (service != null) {
+            m.cancel(service);
+        }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        super.onReceive(context, intent);
+
     }
 }

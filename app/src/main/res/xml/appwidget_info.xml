@@ -1,14 +1,12 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialLayout="@layout/appwidget"
-    android:minHeight="200dp"
-    android:minResizeHeight="200dp"
-    android:minResizeWidth="200dp"
-    android:minWidth="200dp"
+    android:minHeight="80dp"
+    android:minWidth="250dp"
+    android:minResizeHeight="80dp"
+    android:minResizeWidth="250dp"
     android:previewImage="@drawable/widget_preview_1"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="3600000"
+    android:updatePeriodMillis="1800000"
     android:widgetCategory="home_screen"/>
 
     <!--android:configure="tk.rockbutton.splatapp.AppWidgetConfigure1"-->
-
-    <!--android:previewImage="@drawable/widget_preview"-->

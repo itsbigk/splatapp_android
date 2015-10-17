@@ -163,28 +163,36 @@ public class MainActivity extends AppCompatActivity
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (isNotificationActive)
-            notificationManager.cancel(1);
+            notificationManager.cancel(0);
         else {
             updateNotification();
         }
     }
 
-    public static void updateNotification() {
-        SharedPreferences prefs = MainActivity.context.getSharedPreferences(
+    public void updateNotification() {
+        SharedPreferences prefs = getSharedPreferences(
                 "tk.rockbutton.splatapp", Context.MODE_PRIVATE);
 
         boolean isNotificationActive = prefs.getBoolean("isNotificationActive", false);
 
         if (!isNotificationActive) return;
 
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent intent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
+
         MapRotation dataset = JsonHelper.getMapRotations();
 
         NotificationManager notificationManager =
-                (NotificationManager) MainActivity.context.getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        RemoteViews contentView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.notification_layout);
+        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_layout);
 
-        RemoteViews expandedView = new RemoteViews(MainActivity.context.getPackageName(), R.layout.big_notification_layout);
+        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.big_notification_layout);
         // Rotation 1
         expandedView.setTextViewText(R.id.rotnot_rot1_ranked_rules, dataset.schedule.get(0).rankedRulesEn);
         expandedView.setTextViewText(R.id.rotnot_rot1_map1_name_regular, dataset.schedule.get(0).regular[0].nameEn);
@@ -212,8 +220,9 @@ public class MainActivity extends AppCompatActivity
         expandedView.setTextViewText(R.id.rotnot_rot3_map1_name_ranked, dataset.schedule.get(2).ranked[0].nameEn);
         expandedView.setTextViewText(R.id.rotnot_rot3_map2_name_ranked, dataset.schedule.get(2).ranked[1].nameEn);
 
-        Notification.Builder builder = new Notification.Builder(MainActivity.context);
+        Notification.Builder builder = new Notification.Builder(this);
         builder
+                .setContentIntent(intent)
                 .setContentTitle("")
                 .setContentText("")
                 .setSmallIcon(R.drawable.ic_stat_name_regular)
@@ -228,41 +237,53 @@ public class MainActivity extends AppCompatActivity
     }
 
     public static void checkForUpdates() {
-        JSONObject json = null;
-        try {
-            json = new JSONObject(JsonHelper.getJsonFromUrl("http://rockbutton.tk/splatapp/checkforupdates.php"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        final SplatappUpdate splatappUpdate = new SplatappUpdate();
-        try {
-            splatappUpdate.lastUpdated = json.getLong("lastUpdated");
-            splatappUpdate.changelog = json.getString("changelog");
-            splatappUpdate.updateUrl = json.getString("updateUrl");
-            splatappUpdate.latestVersion = json.getString("latestVersion");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        // Load items
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JSONObject json = null;
+                try {
+                    json = new JSONObject(JsonHelper.getJsonFromUrl("http://rockbutton.tk/splatapp/checkforupdates.php"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (json == null) return;
 
-        try {
-            PackageInfo pInfo = MainActivity.context.getPackageManager().getPackageInfo(MainActivity.context.getPackageName(), 0);
-            if(!pInfo.versionName.equals(splatappUpdate.latestVersion)){
-                // Need to update!
-                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(MainActivity.context);
-                dlgAlert.setMessage(splatappUpdate.changelog);
-                dlgAlert.setTitle("Update available!");
-                dlgAlert.setPositiveButton("Update",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(splatappUpdate.updateUrl));
-                                MainActivity.context.startActivity(browserIntent);
+                final SplatappUpdate splatappUpdate = new SplatappUpdate();
+                try {
+                    splatappUpdate.lastUpdated = json.getLong("lastUpdated");
+                    splatappUpdate.changelog = json.getString("changelog");
+                    splatappUpdate.updateUrl = json.getString("updateUrl");
+                    splatappUpdate.latestVersion = json.getString("latestVersion");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    PackageInfo pInfo = MainActivity.context.getPackageManager().getPackageInfo(MainActivity.context.getPackageName(), 0);
+                    if (!pInfo.versionName.equals(splatappUpdate.latestVersion)) {
+                        MainActivity.context.runOnUiThread(new Runnable() {
+                            public void run() {
+                                // Need to update!
+                                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(MainActivity.context);
+                                dlgAlert.setMessage(splatappUpdate.changelog);
+                                dlgAlert.setTitle("Update available!");
+                                dlgAlert.setPositiveButton("Update",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(splatappUpdate.updateUrl));
+                                                MainActivity.context.startActivity(browserIntent);
+                                            }
+                                        });
+                                dlgAlert.setCancelable(true);
+                                dlgAlert.create().show();
                             }
                         });
-                dlgAlert.setCancelable(true);
-                dlgAlert.create().show();
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 }
