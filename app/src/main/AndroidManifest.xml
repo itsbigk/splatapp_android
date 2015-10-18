@@ -33,7 +33,7 @@
         <receiver
             android:name="AppWidgetProvider1"
             android:icon="@mipmap/ic_launcher"
-            android:label="Splatoon Current Maps">
+            android:label="Splatoon Squidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

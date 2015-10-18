@@ -1,32 +1,22 @@
 package tk.rockbutton.splatapp;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.os.Debug;
 import android.os.IBinder;
-import android.provider.SyncStateContract;
-import android.support.v7.app.AlertDialog;
-import android.text.format.DateFormat;
-import android.util.Log;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.Timer;
 
 /**
  * Created by max on 10/16/15.
@@ -49,8 +39,14 @@ public class NotificationBackgroundTask extends Service {
     private void updateWidget() {
         //String lastUpdated = DateFormat.format("hh:mm:ss", new Date()).toString();
 
+        // Create an intent to launce something
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        PendingIntent pendingintent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
         RemoteViews view = new RemoteViews(getPackageName(), R.layout.appwidget);
         MapRotation dataset = JsonHelper.getMapRotations();
+
+        view.setOnClickPendingIntent(R.id.widget1_main, pendingintent);
 
         //Regular
         view.setTextViewText(R.id.rotcard_map1_mapName_regular, dataset.schedule.get(0).regular[0].nameEn);
@@ -115,13 +111,33 @@ public class NotificationBackgroundTask extends Service {
         expandedView.setTextViewText(R.id.rotnot_rot3_map1_name_ranked, dataset.schedule.get(2).ranked[0].nameEn);
         expandedView.setTextViewText(R.id.rotnot_rot3_map2_name_ranked, dataset.schedule.get(2).ranked[1].nameEn);
 
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+// Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+
         Notification.Builder builder = new Notification.Builder(this);
         builder
+                .setContentIntent(resultPendingIntent)
                 .setContentTitle("")
                 .setContentText("")
                 .setSmallIcon(R.drawable.ic_stat_name_regular)
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_MIN);
+                .setPriority(Notification.PRIORITY_MIN)
+                .setOngoing(true);
         Notification notification = new Notification.BigTextStyle(builder)
                 .build();
         notification.contentView = contentView;

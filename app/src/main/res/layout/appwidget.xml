@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/widget1_main">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -46,7 +47,11 @@
                         android:padding="5sp"
                         android:text="Regular Battle"
                         android:textColor="@android:color/primary_text_dark"
-                        android:textSize="30sp" />
+                        android:textSize="30sp"
+                        android:shadowColor="#000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1"/>
                 </RelativeLayout>
 
                 <LinearLayout
@@ -160,7 +165,11 @@
                         android:padding="5sp"
                         android:text="Ranked"
                         android:textColor="@android:color/primary_text_dark"
-                        android:textSize="30sp" />
+                        android:textSize="30sp"
+                        android:shadowColor="#000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1" />
 
                     <TextView
                         android:id="@+id/rotcard_header_rules"
@@ -172,7 +181,11 @@
                         android:ellipsize="none"
                         android:padding="5sp"
                         android:textColor="@android:color/secondary_text_dark"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:shadowColor="#000000"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="1" />
                 </RelativeLayout>
 
                 <LinearLayout

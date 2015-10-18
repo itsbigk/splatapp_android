@@ -15,7 +15,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -77,9 +79,9 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent = new Intent(this, NotificationBackgroundTask.class);
         PendingIntent pi = PendingIntent.getService(this, 0, intent, 0);
-        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                1000L,
-                1000L, pi);
+        alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
+                1800000,
+                1800000, pi);
         //INTERVAL_FIFTEEN_MINUTES
         startService(intent);
 
@@ -110,10 +112,10 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_notification) {
             toggleNotification();
@@ -135,7 +137,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = rotationFragment;
                 break;
             case R.id.nav_website:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.rockbutton.tk/splatapp"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://skulltah.github.io/splatapp"));
                 startActivity(browserIntent);
                 break;
         }
@@ -162,10 +164,12 @@ public class MainActivity extends AppCompatActivity
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        if (isNotificationActive)
+        if (isNotificationActive) {
             notificationManager.cancel(0);
-        else {
+            Snackbar.make(findViewById(R.id.main_fragment_container), "Notification disabled.", Snackbar.LENGTH_LONG).show();
+        } else {
             updateNotification();
+            Snackbar.make(findViewById(R.id.main_fragment_container), "Notification enabled.", Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -181,9 +185,6 @@ public class MainActivity extends AppCompatActivity
 
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        PendingIntent intent = PendingIntent.getActivity(context, 0,
-                notificationIntent, 0);
 
         MapRotation dataset = JsonHelper.getMapRotations();
 
@@ -220,14 +221,33 @@ public class MainActivity extends AppCompatActivity
         expandedView.setTextViewText(R.id.rotnot_rot3_map1_name_ranked, dataset.schedule.get(2).ranked[0].nameEn);
         expandedView.setTextViewText(R.id.rotnot_rot3_map2_name_ranked, dataset.schedule.get(2).ranked[1].nameEn);
 
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+// Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(MainActivity.class);
+// Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+
         Notification.Builder builder = new Notification.Builder(this);
         builder
-                .setContentIntent(intent)
                 .setContentTitle("")
                 .setContentText("")
                 .setSmallIcon(R.drawable.ic_stat_name_regular)
-                .setAutoCancel(true)
-                .setPriority(Notification.PRIORITY_MIN);
+                .setPriority(Notification.PRIORITY_MIN)
+                .setOngoing(true)
+                .setContentIntent(resultPendingIntent);
         Notification notification = new Notification.BigTextStyle(builder)
                 .build();
         notification.contentView = contentView;
@@ -243,7 +263,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 JSONObject json = null;
                 try {
-                    json = new JSONObject(JsonHelper.getJsonFromUrl("http://rockbutton.tk/splatapp/checkforupdates.php"));
+                    json = new JSONObject(JsonHelper.getJsonFromUrl("http://skulltah.github.io/splatapp/checkforupdates"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -266,7 +286,7 @@ public class MainActivity extends AppCompatActivity
                             public void run() {
                                 // Need to update!
                                 AlertDialog.Builder dlgAlert = new AlertDialog.Builder(MainActivity.context);
-                                dlgAlert.setMessage(splatappUpdate.changelog);
+                                dlgAlert.setMessage(splatappUpdate.changelog.replace("\\r\\n", "\n"));
                                 dlgAlert.setTitle("Update available!");
                                 dlgAlert.setPositiveButton("Update",
                                         new DialogInterface.OnClickListener() {
