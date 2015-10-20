@@ -1,4 +1,4 @@
-package tk.rockbutton.splatapp;
+package io.skulltah.splatapp;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -40,13 +40,15 @@ public class NotificationBackgroundTask extends Service {
         //String lastUpdated = DateFormat.format("hh:mm:ss", new Date()).toString();
 
         // Create an intent to launce something
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingintent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
         RemoteViews view = new RemoteViews(getPackageName(), R.layout.appwidget);
         MapRotation dataset = JsonHelper.getMapRotations();
 
         view.setOnClickPendingIntent(R.id.widget1_main, pendingintent);
+
+        if (dataset == null) return;
 
         //Regular
         view.setTextViewText(R.id.rotcard_map1_mapName_regular, dataset.schedule.get(0).regular[0].nameEn);
@@ -67,7 +69,6 @@ public class NotificationBackgroundTask extends Service {
     }
 
 
-
     public void updateNotification() {
         SharedPreferences prefs = getSharedPreferences(
                 "tk.rockbutton.splatapp", Context.MODE_PRIVATE);
@@ -84,6 +85,9 @@ public class NotificationBackgroundTask extends Service {
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_layout);
 
         RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.big_notification_layout);
+
+        if (dataset == null) return;
+
         // Rotation 1
         expandedView.setTextViewText(R.id.rotnot_rot1_ranked_rules, dataset.schedule.get(0).rankedRulesEn);
         expandedView.setTextViewText(R.id.rotnot_rot1_map1_name_regular, dataset.schedule.get(0).regular[0].nameEn);

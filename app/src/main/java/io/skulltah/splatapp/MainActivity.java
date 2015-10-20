@@ -1,4 +1,4 @@
-package tk.rockbutton.splatapp;
+package io.skulltah.splatapp;
 
 import android.app.AlarmManager;
 import android.app.Fragment;
@@ -11,12 +11,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -85,7 +83,7 @@ public class MainActivity extends AppCompatActivity
         //INTERVAL_FIFTEEN_MINUTES
         startService(intent);
 
-        checkForUpdates();
+//        checkForUpdates();
     }
 
     @Override
@@ -194,6 +192,9 @@ public class MainActivity extends AppCompatActivity
         RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_layout);
 
         RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.big_notification_layout);
+
+        if (dataset == null) return;
+
         // Rotation 1
         expandedView.setTextViewText(R.id.rotnot_rot1_ranked_rules, dataset.schedule.get(0).rankedRulesEn);
         expandedView.setTextViewText(R.id.rotnot_rot1_map1_name_regular, dataset.schedule.get(0).regular[0].nameEn);

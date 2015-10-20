@@ -1,4 +1,4 @@
-package tk.rockbutton.splatapp;
+package io.skulltah.splatapp;
 
 /**
  * Created by max on 10/16/15.

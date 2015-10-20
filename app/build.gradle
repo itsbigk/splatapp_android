@@ -3,13 +3,12 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.0"
-
     defaultConfig {
-        applicationId "tk.rockbutton.splatapp"
+        applicationId 'io.github.skulltah.splatapp'
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
-        versionName "1.2.1"
+        versionName "1.2.2"
         multiDexEnabled true
     }
     buildTypes {
@@ -17,6 +16,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
     }
 }
 

@@ -1,4 +1,4 @@
-package tk.rockbutton.splatapp;
+package io.skulltah.splatapp;
 
 import android.app.Fragment;
 import android.net.Uri;
@@ -106,6 +106,7 @@ public class RotationFragment extends Fragment {
             @Override
             public void run() {
                 MapRotation mapRotation = JsonHelper.getMapRotations();
+                if (mapRotation == null) return;
                 adapter.updateDataset(mapRotation.schedule.toArray(new MapRotation.ScheduleItem[mapRotation.schedule.size()]));
             }
         }).start();

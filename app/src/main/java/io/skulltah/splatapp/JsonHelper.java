@@ -1,4 +1,4 @@
-package tk.rockbutton.splatapp;
+package io.skulltah.splatapp;
 
 import android.os.StrictMode;
 
@@ -10,7 +10,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,12 +70,15 @@ public class JsonHelper {
     }
 
     public static MapRotation getMapRotations() {
+        String json_string = JsonHelper.getMapRotationsJson();
+        if (json_string == null) return null;
         JSONObject json = null;
         try {
-            json = new JSONObject(JsonHelper.getMapRotationsJson());
+            json = new JSONObject(json_string);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        if (json == null) return null;
         MapRotation mapRotation = new MapRotation();
         try {
             mapRotation.updateTime = json.getLong("updateTime");

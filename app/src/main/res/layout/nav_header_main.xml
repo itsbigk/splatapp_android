@@ -9,12 +9,17 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark" android:orientation="vertical"
     android:gravity="bottom">
 
-    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@mipmap/ic_launcher" android:id="@+id/imageView" />
+    <!--<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"-->
+        <!--android:paddingTop="@dimen/nav_header_vertical_spacing"-->
+        <!--android:src="@mipmap/ic_launcher" android:id="@+id/imageView" />-->
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
         android:paddingTop="5sp" android:text="@string/app_about"
         android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingTop="5sp" android:text="@string/copyright"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textSize="12sp"/>
 
 </LinearLayout>

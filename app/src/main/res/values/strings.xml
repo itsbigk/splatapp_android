@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SplatApp</string>
     <string name="app_about">Version 1.2 \nDeveloped by RockButton, Max Marshall.</string>
+    <string name="copyright">Splatoon is a trademark of Nintendo and this App is in no way affiliated or associated with Nintendo.</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

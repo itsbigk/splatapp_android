@@ -1,4 +1,4 @@
-package tk.rockbutton.splatapp;
+package io.skulltah.splatapp;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
