@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
@@ -70,10 +71,8 @@ public class NotificationBackgroundTask extends Service {
 
 
     public void updateNotification() {
-        SharedPreferences prefs = getSharedPreferences(
-                "tk.rockbutton.splatapp", Context.MODE_PRIVATE);
-
-        boolean isNotificationActive = prefs.getBoolean("isNotificationActive", false);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isNotificationActive = prefs.getBoolean("notifications_map_rotation", false);
 
         if (!isNotificationActive) return;
 

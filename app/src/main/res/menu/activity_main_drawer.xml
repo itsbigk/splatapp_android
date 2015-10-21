@@ -2,8 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_rotaton" android:icon="@android:drawable/ic_menu_today"
+        <item android:id="@+id/nav_rotaton" android:icon="@drawable/maps"
             android:title="Stage Info" />
+        <item android:id="@+id/nav_friend_list" android:icon="@drawable/friend_list"
+            android:title="Friend List" />
+        <item android:id="@+id/nav_rank" android:icon="@drawable/ranking"
+            android:title="Ranking" />
+        <item android:id="@+id/nav_equipment" android:icon="@drawable/equipment"
+            android:title="Equipment" />
     </group>
 
     <item android:title="About">

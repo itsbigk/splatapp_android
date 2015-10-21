@@ -11,8 +11,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.TaskStackBuilder;
@@ -22,14 +25,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -41,10 +51,14 @@ public class MainActivity extends AppCompatActivity
     public static MainActivity context;
 
     View fragment_container;
+    ImageView miiIcon;
+    TextView miiName;
+    NavigationView navigationView;
 
     RotationFragment rotationFragment;
-
-    private AlarmManager alarmMgr;
+    RankFragment rankFragment;
+    FriendListFragment friendListFragment;
+    EquipmentFragment equipmentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +75,18 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.getMenu().getItem(0).setChecked(true);
 
-        alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         fragment_container = findViewById(R.id.main_fragment_container);
 
         rotationFragment = new RotationFragment();
+        rankFragment = new RankFragment();
+        friendListFragment = new FriendListFragment();
+        equipmentFragment = new EquipmentFragment();
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_fragment_container, rotationFragment)
@@ -80,10 +97,30 @@ public class MainActivity extends AppCompatActivity
         alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 1800000,
                 1800000, pi);
-        //INTERVAL_FIFTEEN_MINUTES
         startService(intent);
+    }
 
-//        checkForUpdates();
+    public static void goToDefaultFragment(){
+        context.getFragmentManager().beginTransaction()
+                .replace(R.id.main_fragment_container, context.rotationFragment)
+                        .commit();
+        context.navigationView.getMenu().getItem(0).setChecked(true);
+    }
+
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+//            Log.e("src", src);
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return BitmapFactory.decodeStream(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+//            Log.e("Exception", e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -100,6 +137,15 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        miiIcon = (ImageView) findViewById(R.id.mii_icon);
+        miiName = (TextView) findViewById(R.id.mii_name);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.context);
+        if (!prefs.getString("mii_name", "").equals("")) {
+            miiIcon.setImageBitmap(getBitmapFromURL(prefs.getString("mii_icon", "")));
+            miiName.setText(prefs.getString("mii_name", ""));
+        }
         return true;
     }
 
@@ -110,14 +156,23 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_notification) {
-            toggleNotification();
-            return true;
+        switch (id) {
+            case R.id.action_about:
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle("About");
+                alertDialog.setMessage(getString(R.string.copyright));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+                return true;
+            case R.id.action_settings:
+                Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(myIntent);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -134,6 +189,15 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_rotaton:
                 fragment = rotationFragment;
                 break;
+            case R.id.nav_rank:
+                fragment = rankFragment;
+                break;
+            case R.id.nav_friend_list:
+                fragment = friendListFragment;
+                break;
+            case R.id.nav_equipment:
+                fragment = equipmentFragment;
+                break;
             case R.id.nav_website:
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://skulltah.github.io/splatapp"));
                 startActivity(browserIntent);
@@ -149,162 +213,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void toggleNotification() {
-        SharedPreferences prefs = this.getSharedPreferences(
-                "tk.rockbutton.splatapp", Context.MODE_PRIVATE);
-
-        boolean isNotificationActive = prefs.getBoolean("isNotificationActive", false);
-
-        prefs.edit().putBoolean("isNotificationActive", !isNotificationActive).apply();
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (isNotificationActive) {
-            notificationManager.cancel(0);
-            Snackbar.make(findViewById(R.id.main_fragment_container), "Notification disabled.", Snackbar.LENGTH_LONG).show();
-        } else {
-            updateNotification();
-            Snackbar.make(findViewById(R.id.main_fragment_container), "Notification enabled.", Snackbar.LENGTH_LONG).show();
-        }
-    }
-
-    public void updateNotification() {
-        SharedPreferences prefs = getSharedPreferences(
-                "tk.rockbutton.splatapp", Context.MODE_PRIVATE);
-
-        boolean isNotificationActive = prefs.getBoolean("isNotificationActive", false);
-
-        if (!isNotificationActive) return;
-
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        MapRotation dataset = JsonHelper.getMapRotations();
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        RemoteViews contentView = new RemoteViews(getPackageName(), R.layout.notification_layout);
-
-        RemoteViews expandedView = new RemoteViews(getPackageName(), R.layout.big_notification_layout);
-
-        if (dataset == null) return;
-
-        // Rotation 1
-        expandedView.setTextViewText(R.id.rotnot_rot1_ranked_rules, dataset.schedule.get(0).rankedRulesEn);
-        expandedView.setTextViewText(R.id.rotnot_rot1_map1_name_regular, dataset.schedule.get(0).regular[0].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot1_map2_name_regular, dataset.schedule.get(0).regular[1].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot1_map1_name_ranked, dataset.schedule.get(0).ranked[0].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot1_map2_name_ranked, dataset.schedule.get(0).ranked[1].nameEn);
-        // Rotation 2
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        dateFormatter.setTimeZone(TimeZone.getDefault());
-        String starttime2 = dateFormatter.format(new Date(dataset.schedule.get(1).startTime));
-        String endtime2 = dateFormatter.format(new Date(dataset.schedule.get(1).endTime));
-        expandedView.setTextViewText(R.id.rotnot_rot2_time, starttime2 + "\r\n" + endtime2);
-        expandedView.setTextViewText(R.id.rotnot_rot2_ranked_rules, dataset.schedule.get(1).rankedRulesEn);
-        expandedView.setTextViewText(R.id.rotnot_rot2_map1_name_regular, dataset.schedule.get(1).regular[0].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot2_map2_name_regular, dataset.schedule.get(1).regular[1].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot2_map1_name_ranked, dataset.schedule.get(1).ranked[0].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot2_map2_name_ranked, dataset.schedule.get(1).ranked[1].nameEn);
-        // Rotation 3
-        String starttime3 = dateFormatter.format(new Date(dataset.schedule.get(2).startTime));
-        String endtime3 = dateFormatter.format(new Date(dataset.schedule.get(2).endTime));
-        expandedView.setTextViewText(R.id.rotnot_rot3_time, starttime3 + "\r\n" + endtime3);
-        expandedView.setTextViewText(R.id.rotnot_rot3_ranked_rules, dataset.schedule.get(2).rankedRulesEn);
-        expandedView.setTextViewText(R.id.rotnot_rot3_map1_name_regular, dataset.schedule.get(2).regular[0].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot3_map2_name_regular, dataset.schedule.get(2).regular[1].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot3_map1_name_ranked, dataset.schedule.get(2).ranked[0].nameEn);
-        expandedView.setTextViewText(R.id.rotnot_rot3_map2_name_ranked, dataset.schedule.get(2).ranked[1].nameEn);
-
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(this, MainActivity.class);
-
-// The stack builder object will contain an artificial back stack for the
-// started Activity.
-// This ensures that navigating backward from the Activity leads out of
-// your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-// Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(MainActivity.class);
-// Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-
-        Notification.Builder builder = new Notification.Builder(this);
-        builder
-                .setContentTitle("")
-                .setContentText("")
-                .setSmallIcon(R.drawable.ic_stat_name_regular)
-                .setPriority(Notification.PRIORITY_MIN)
-                .setOngoing(true)
-                .setContentIntent(resultPendingIntent);
-        Notification notification = new Notification.BigTextStyle(builder)
-                .build();
-        notification.contentView = contentView;
-        notification.bigContentView = expandedView;
-
-        notificationManager.notify(0, notification);
-    }
-
-    public static void checkForUpdates() {
-        // Load items
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                JSONObject json = null;
-                try {
-                    json = new JSONObject(JsonHelper.getJsonFromUrl("http://skulltah.github.io/splatapp/checkforupdates"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (json == null) return;
-
-                final SplatappUpdate splatappUpdate = new SplatappUpdate();
-                try {
-                    splatappUpdate.lastUpdated = json.getLong("lastUpdated");
-                    splatappUpdate.changelog = json.getString("changelog");
-                    splatappUpdate.updateUrl = json.getString("updateUrl");
-                    splatappUpdate.latestVersion = json.getString("latestVersion");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    PackageInfo pInfo = MainActivity.context.getPackageManager().getPackageInfo(MainActivity.context.getPackageName(), 0);
-                    if (!pInfo.versionName.equals(splatappUpdate.latestVersion)) {
-                        MainActivity.context.runOnUiThread(new Runnable() {
-                            public void run() {
-                                // Need to update!
-                                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(MainActivity.context);
-                                dlgAlert.setMessage(splatappUpdate.changelog.replace("\\r\\n", "\n"));
-                                dlgAlert.setTitle("Update available!");
-                                dlgAlert.setPositiveButton("Update",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(splatappUpdate.updateUrl));
-                                                MainActivity.context.startActivity(browserIntent);
-                                            }
-                                        });
-                                dlgAlert.setCancelable(true);
-                                dlgAlert.create().show();
-                            }
-                        });
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 }
